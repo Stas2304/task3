@@ -12,19 +12,44 @@ function gcd(a, b) {
 }
 
 function lcm(a, b) {
-    const bigA = BigInt(Math.abs(a));
-    const bigB = BigInt(Math.abs(b));
-    const bigGcd = BigInt(gcd(a, b));
+
+    const numX = parseInt(a.replace('{', '').replace('}', ''), 10);
+    const numY = parseInt(b.replace('{', '').replace('}', ''), 10);
+
+    if (!numX || !numY || numX <= 0 || numY <= 0) {
+      return res.type('text').send('NaN');
+    }
+
+    const bigA = BigInt(Math.abs(numX));
+    const bigB = BigInt(Math.abs(numY));
+    const bigGcd = BigInt(gcd(numX, numY));
     
     if (bigGcd === 0n) return 0;
     
     const result = (bigA * bigB) / bigGcd;
     
     if (result > Number.MAX_SAFE_INTEGER) {
-        return result.toString();
+        return bigInt(a, b).toString();
     }
     
     return Number(result);
+}
+
+const bigInt = (v1, v2) => {
+  function gcdBigInt(a, b) {
+    while (b !== 0n) {
+        [a, b] = [b, a % b];
+    }
+    return a;
+  }
+
+  function lcmBigInt(a, b) {
+    if (a === 0n || b === 0n) return 0n;
+    const g = gcdBigInt(a, b);
+    return (a * b) / g;
+  }
+
+  return lcmBigInt(BigInt(v1), BigInt(v2));
 }
 
 function isValidNaturalNumber(input) {
@@ -51,16 +76,8 @@ app.get(path, (req, res) => {
         if (!isValidNaturalNumber(x.toString()) || !isValidNaturalNumber(y.toString())) {
             return res.type('text').send('NaN');
         }
-        
-        const numX = parseInt(x.replace('{', '').replace('}', ''), 10);
-        const numY = parseInt(y.replace('{', '').replace('}', ''), 10);
-        
 
-        if (!Number.isInteger(numX) || !Number.isInteger(numY) || numX <= 0 || numY <= 0) {
-            return res.type('text').send('NaN');
-        }
-        
-        const result = lcm(numX, numY);
+        const result = lcm(x, y);
         
         return res.type('text').send(result.toString());
         
