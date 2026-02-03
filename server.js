@@ -30,7 +30,7 @@ function lcm(a, b) {
 function isValidNaturalNumber(input) {
     if (typeof input !== 'string') return false;
     
-    const trimmed = input.replace(/^0+(?=\d)/, '');
+    const trimmed = input.replace(/^0+(?=\d)/, '').replace('{', '').replace('}', '');
 
     if (!/^\d+$/.test(trimmed)) return false;
     
@@ -52,8 +52,8 @@ app.get(path, (req, res) => {
             return res.type('text').send('NaN');
         }
         
-        const numX = parseInt(x, 10);
-        const numY = parseInt(y, 10);
+        const numX = parseInt(x.replace('{', '').replace('}', ''), 10);
+        const numY = parseInt(y.replace('{', '').replace('}', ''), 10);
         
 
         if (!Number.isInteger(numX) || !Number.isInteger(numY) || numX <= 0 || numY <= 0) {
@@ -83,6 +83,7 @@ app.get('/test', (req, res) => {
         { x: '12.5', y: '10', expected: 'NaN' },
         { x: '', y: '10', expected: 'NaN' },
         { x: '012', y: '18', expected: '36' },
+        { x: '{15}', y: '{25}', expected: '75' },
         { x: '999999999999999', y: '999999999999999', expected: '999999999999999' }
     ];
     
@@ -120,7 +121,7 @@ app.get('/test', (req, res) => {
     res.send(html);
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT,() => {
     console.log(`✅ LCM API запущен на порту ${PORT}`);
     console.log(`📚 Документация: http://localhost:${PORT}/`);
