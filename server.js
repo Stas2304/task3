@@ -30,12 +30,12 @@ function lcm(a, b) {
 function isValidNaturalNumber(input) {
     if (typeof input !== 'string') return false;
     
-    const trimmed = input.replace(/^0+(?=\d)/, '').replace('{', '').replace('}', '');
+    const trimmed = input.replace(/^0+(?=\d)/, '');
 
     if (!/^\d+$/.test(trimmed)) return false;
     
     const num = Number(trimmed);
-    return Number.isSafeInteger(num) && num > 0;
+    return Number.isInteger(num) && num > 0;
 }
 
 const path = '/ystl1302_gmail_com';
@@ -83,7 +83,6 @@ app.get('/test', (req, res) => {
         { x: '12.5', y: '10', expected: 'NaN' },
         { x: '', y: '10', expected: 'NaN' },
         { x: '012', y: '18', expected: '36' },
-        { x: '{15}', y: '{25}', expected: '75' },
         { x: '999999999999999', y: '999999999999999', expected: '999999999999999' }
     ];
     
